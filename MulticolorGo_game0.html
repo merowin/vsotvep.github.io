@@ -225,7 +225,7 @@
 						if (i != 0 && i != BOARDSIZE+1) {
 							e.innerHTML = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'[i-1];
 						} else if (j != 0 && j != BOARDSIZE+1) {
-							e.innerHTML = j;
+							e.innerHTML = BOARDSIZE - j + 1;
 						}
 					} else {
 						e.classList.add('intersection');
