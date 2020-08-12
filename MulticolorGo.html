@@ -13,6 +13,8 @@
 			--p8: #55b2eb;
 			--p9: #e6a100;
 			
+			--board: #e0bd66;
+			
 			--o1: 100%;
 			--o2: 50%;
 			--o3: 50%;
@@ -37,7 +39,7 @@
 		#container {
 			width: min(90vh, 90vw);
 			height: min(90vh, 90vw);
-			background-color: #e0bd66;
+			background-color: var(--board);
 			display: flex;
 			flex-direction: vertical;
 			position: relative;
@@ -147,6 +149,45 @@
 			background-color: var(--p1);
 			border-radius: 50%;
 		}
+		
+		#buttons {
+			background-color: var(--board);
+			display: flex;
+			flex-direction: column;
+			justify-content: top;
+		}
+		
+		.button:hover {
+			cursor: pointer;
+		}
+		
+		.button {
+			width: min(4vh, 4vw);
+			height: min(4vh, 4vw);
+			border: min(0.25vh,0.25vw) solid var(--board);
+			margin: min(0.5vh, 0.5vw) min(0.5vh, 0.5vw) 0 0;
+			
+			color: var(--p1);
+			font-family: Arial;
+			font-size: min(3vh, 3vw);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		
+		#b1 { background-color: var(--p1); }
+		#b2 { background-color: var(--p2); }
+		#b3 { background-color: var(--p3); }
+		#b4 { background-color: var(--p4); }
+		#b5 { background-color: var(--p5); }
+		#b6 { background-color: var(--p6); }
+		#b7 { background-color: var(--p7); }
+		#b8 { background-color: var(--p8); }
+		#b9 { background-color: var(--p9); }
+		
+		.button.selected {
+			border: min(0.25vh,0.25vw) solid black;
+		}
 	</style>
 	<script>
 		var BOARDSIZE = 9;
@@ -249,6 +290,26 @@
 				}
 				stctn.appendChild(row);
 			}
+			
+			var buttons = document.createElement('div');
+			buttons.id = "buttons";
+			for (i = 1; i < 11; i++) {
+				var b = document.createElement('div');
+				b.classList.add("button");
+				b.id = "b" + i;
+				if (i != 10) {
+					(function() {
+						var ii = "" + i;
+						b.onclick = function() { switchColor(ii) };
+					})();
+				} else {
+					b.onclick = function() { switchColor("0") };
+					b.innerHTML = '⌫';
+					b.classList.add("selected");
+				}
+				buttons.appendChild(b);
+			}
+			ctn.appendChild(buttons);
 		}
 		
 		function changeStone(i,j,c) {
@@ -265,9 +326,23 @@
 		document.addEventListener('keydown', keypressed);
 		
 		function keypressed(e) {
-			
-			document.documentElement.style.setProperty('--o' + currentcolor, '50%');
 			switch (e.key) {
+				case "1":
+				case "2":
+				case "3":
+				case "4":
+				case "5":
+				case "6":
+				case "7":
+				case "8":
+				case "9":
+				case "0": switchColor(e.key);
+			}
+		}
+		
+		function switchColor(c) {
+			document.documentElement.style.setProperty('--o' + currentcolor, '50%');
+			switch (c) {
 				case "1": currentcolor = 1; break;
 				case "2": currentcolor = 2; break;
 				case "3": currentcolor = 3; break;
@@ -278,11 +353,15 @@
 				case "8": currentcolor = 8; break;
 				case "9": currentcolor = 9; break;
 				case "0": currentcolor = 0; break;
+				
 			}
 			document.documentElement.style.setProperty('--cc', 'var(--p' + currentcolor + ')');
 			document.documentElement.style.setProperty('--o' + currentcolor, '100%');
 			
 			nametag.innerHTML = (currentcolor == 0 ? nametagempty : nametagroot + colorlist[currentcolor-1] );
+			var sel = document.getElementsByClassName('selected')[0];
+			sel.classList.remove('selected');
+			document.getElementById('b' + (c == 0 ? 10 : c)).classList.add('selected');
 		}
 	</script>
 </head>
