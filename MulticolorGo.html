@@ -199,8 +199,8 @@
 		
 		var params = (new URL(document.location)).searchParams;
 		
-		var bz = parseInt(params.get("bz"));
-		var BOARDSIZE = (Number.isInteger(bz) && bz > 1 && bz < 26 ? bz : 9 );
+		var bs = parseInt(params.get("bs"));
+		var BOARDSIZE = (Number.isInteger(bs) && bs > 1 && bs < 26 ? bs : 9 );
 		
 		var gamestate = new Array();
 		if (params.get("st") != null) {
