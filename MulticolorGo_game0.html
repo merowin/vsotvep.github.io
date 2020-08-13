@@ -109,6 +109,7 @@
 		.intersection.c8:hover div { background-image: linear-gradient(135deg, var(--p8) 60%, var(--cc) 60%); opacity: 100%; }
 		.intersection.c9:hover div { background-image: linear-gradient(135deg, var(--p9) 60%, var(--cc) 60%); opacity: 100%; }
 		
+
 		#gridcontainer {
 			position: absolute;
 			width: 100%;
@@ -186,9 +187,11 @@
 		#b9 { background-color: var(--p9); }
 		
 		.button.selected {
-			border: min(0.25vh,0.25vw) solid  var(--p1);
+			border: min(0.25vh,0.25vw) solid black;
 		}
 	</style>
+	
+	<link href="othercss.css" rel="stylesheet">
 	<script>
 		var BOARDSIZE = 9;
 		
@@ -197,6 +200,7 @@
 		var nametag = document.createElement('div');
 		
 		var mouseDown = 0;
+		var shifted;
 		
 		var nametagroot = "Placing stones as: ";
 		var nametagempty = "Removing stones";
@@ -206,6 +210,7 @@
 		function initialise() {
 			var ctn = document.createElement('div');
 			ctn.id = 'container';
+			ctn.classList.add('cc0');
 			document.body.appendChild(ctn);
 			
 			
@@ -294,19 +299,25 @@
 			
 			var buttons = document.createElement('div');
 			buttons.id = "buttons";
-			for (i = 1; i < 11; i++) {
+			for (i = 1; i < 12; i++) {
 				var b = document.createElement('div');
 				b.classList.add("button");
 				b.id = "b" + i;
-				if (i != 10) {
+				if (i < 10) {
 					(function() {
 						var ii = "" + i;
 						b.onclick = function() { switchColor(ii) };
 					})();
 				} else {
-					b.onclick = function() { switchColor("0") };
-					b.innerHTML = '⌫';
-					b.classList.add("selected");
+					if (i == 10) {
+						b.onclick = function() { switchColor("0") };
+						b.innerHTML = '⌫';
+						b.classList.add("selected");
+					} else {
+						
+						b.onclick = function() { toggleShift(1); };
+						b.innerHTML = '+';
+					}
 				}
 				buttons.appendChild(b);
 			}
@@ -317,16 +328,45 @@
 			if (mouseDown == 1 || c == 1) {
 				var e = board[i][j];
 				if (currentcolor != 0 && (mouseDown == 1 || !e.classList.contains("c" + currentcolor))) {
-					e.className = "intersection c" + currentcolor;
+					if (shifted) {
+						e.classList.add("c" + currentcolor);
+					} else { 
+						e.className = "intersection c" + currentcolor;
+					}
 				} else {
-					e.className = "intersection";
+					if (shifted) {
+						e.classList.remove("c" + currentcolor);
+					} else {
+						e.className = "intersection";
+					}
 				}
 			}
 		}
 		
+		function toggleShift(x) {
+			if (x == 1) {
+				if (shifted == 1) {
+					shifted = 0;
+				} else {
+					shifted = 1;
+				}
+			}
+			
+			if (shifted == 1) {
+				document.getElementById('b11').classList.add("selected");
+				document.getElementById('container').classList.add("shifted");
+			} else {
+				document.getElementById('b11').classList.remove("selected");
+				document.getElementById('container').classList.remove("shifted");
+			}
+		}
+		
 		document.addEventListener('keydown', keypressed);
+		document.addEventListener('keyup', function(e){ shifted = e.shiftKey; toggleShift(0); });
 		
 		function keypressed(e) {
+			shifted = e.shiftKey;
+			toggleShift(0);
 			switch (e.key) {
 				case "1":
 				case "2":
@@ -358,6 +398,18 @@
 			}
 			document.documentElement.style.setProperty('--cc', 'var(--p' + currentcolor + ')');
 			document.documentElement.style.setProperty('--o' + currentcolor, '100%');
+			var ctn = document.getElementById('container');
+			ctn.classList.remove('cc1');
+			ctn.classList.remove('cc2');
+			ctn.classList.remove('cc3');
+			ctn.classList.remove('cc4');
+			ctn.classList.remove('cc5');
+			ctn.classList.remove('cc6');
+			ctn.classList.remove('cc7');
+			ctn.classList.remove('cc8');
+			ctn.classList.remove('cc9');
+			ctn.classList.remove('cc0');
+			ctn.classList.add('cc' + currentcolor);
 			
 			nametag.innerHTML = (currentcolor == 0 ? nametagempty : nametagroot + colorlist[currentcolor-1] + ' (' + players[currentcolor-1] + ')' );
 			var sel = document.getElementsByClassName('selected')[0];
