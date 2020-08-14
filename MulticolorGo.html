@@ -32,15 +32,18 @@
 			background: black;
 			display: flex;
 			justify-content: center;
-			align-items: center;
 			margin: 0;
 			user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
 		}
 		
 		#container {
 			width: min(90vh, 90vw);
 			height: min(90vh, 90vw);
 			background-color: var(--board);
+			margin-top: min(5vh, 5vw);
 			display: flex;
 			flex-direction: vertical;
 			position: relative;
@@ -156,7 +159,6 @@
 			background-color: var(--board);
 			display: flex;
 			flex-direction: column;
-			justify-content: top;
 		}
 		
 		.button:hover {
@@ -192,9 +194,10 @@
 		.button.selected {
 			border: min(0.25vh,0.25vw) solid var(--p1);
 		}
+		
 	</style>
 	
-	<link href="othercss.css" rel="stylesheet">
+	<link href="morecss.css" rel="stylesheet">
 	<script>
 		
 		var params = (new URL(document.location)).searchParams;
