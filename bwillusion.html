@@ -1,0 +1,177 @@
+<html>
+<style>
+	body {
+		background-color: #2D2D2D;
+		padding: 50px;
+		display: flex;
+		justify-content: space-around;
+	}
+	
+	#controls {
+		padding: 30px;
+		background-color: #b78e42;
+		width: 100px;
+		height: 150px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	
+	#result, #result-button {
+		margin-top: 20px;
+		width: 100%;
+		height: 50px;
+		text-align: center;
+		font-size: 1.5em;
+	}
+	
+	#result {
+		display: none;
+	}
+	
+	button {
+		padding: 5px;
+		font-size: 2em; 
+	}
+	
+	#goban {
+		width: 800px;
+		height: 800px;
+		background-color: #b78e42;
+		position: relative;
+	}
+	
+	.black {
+		width: 40px;
+		height: 40px;
+		background-color: black;
+		border-radius: 150px;
+		position: absolute;
+	}
+	
+	.white {
+		width: 50px;
+		height: 50px;
+		background-color: white;
+		border-radius: 150px;
+		position: absolute;
+	}
+</style>
+<script>
+	
+	var i,j;
+	var dim = 40;
+	var inc = 0.25;
+	
+	window.onload = function() {
+		var stones = document.getElementsByClassName("stone");
+		var coords = [];
+		
+		for (i=0; i<stones.length; i++) {
+			var flag = true;
+			var x,y;
+			while (flag) {
+				var flagg = true;
+				x = Math.round(Math.random()*700+50);
+				y = Math.round(Math.random()*700+50);
+				
+				for (j=0; j<coords.length; j+=2) {
+					if ((coords[j]-x)*(coords[j]-x) + (coords[j+1]-y)*(coords[j+1]-y) < 3600) {
+						flagg = false;
+						break;
+					}
+				}
+				
+				if (flagg) {
+					coords.push(x);
+					coords.push(y);
+					flag = false;
+				}
+			}
+			stones[i].style.left = x + "px";
+			stones[i].style.top = y + "px";
+		}
+	};
+	
+	function up() {
+		var stones = document.getElementsByClassName("black");
+		dim += inc;
+		for (i=0; i<stones.length; i++) {
+			stones[i].style.height = dim + "px";
+			stones[i].style.width = dim + "px";
+		}
+		document.getElementById("result").innerHTML = dim-50;
+	}
+	function down() {
+		var stones = document.getElementsByClassName("black");
+		dim -= inc;
+		for (i=0; i<stones.length; i++) {
+			stones[i].style.height = dim + "px";
+			stones[i].style.width = dim + "px";
+		}
+		document.getElementById("result").innerHTML = dim-50;
+	}
+	
+	function show() {
+		document.getElementById("result-button").style.display = "none";
+		document.getElementById("result").style.display = "inline";
+	}
+</script>
+<body>
+	<div id="controls">
+		<button onclick="up();">↑</button>
+		<button onclick="down();">↓</button>
+		<button id="result-button" onclick="show();">show</button>
+		<div id="result">-10</div>
+	</div>
+	<div id="goban">
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+		<div class="black stone"></div>
+		<div class="white stone"></div>
+	</div>
+
+</body>
+</html>
