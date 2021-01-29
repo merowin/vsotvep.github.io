@@ -60,11 +60,12 @@
 <script>
 	
 	var i,j;
-	var dim = 40;
+	var dim = Math.round(Math.random()*20)+40;
 	var inc = 1;
 	
 	window.onload = function() {
 		var stones = document.getElementsByClassName("stone");
+		var bstones = document.getElementsByClassName("black");
 		var coords = [];
 		
 		for (i=0; i<stones.length; i++) {
@@ -72,8 +73,8 @@
 			var x,y;
 			while (flag) {
 				var flagg = true;
-				x = Math.round(Math.random()*700+50);
-				y = Math.round(Math.random()*700+50);
+				x = Math.round(Math.random()*700+25);
+				y = Math.round(Math.random()*700+25);
 				
 				for (j=0; j<coords.length; j+=2) {
 					if ((coords[j]-x)*(coords[j]-x) + (coords[j+1]-y)*(coords[j+1]-y) < 3600) {
@@ -90,6 +91,10 @@
 			}
 			stones[i].style.left = x + "px";
 			stones[i].style.top = y + "px";
+		}
+		for (i=0;i<bstones.length; i++) {
+			bstones[i].style.height = dim + "px";
+			bstones[i].style.width = dim + "px";
 		}
 	};
 	
