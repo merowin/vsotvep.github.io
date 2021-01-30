@@ -1,0 +1,584 @@
+<html>
+<style>
+	body {
+		background-color: #2D2D2D;
+		padding: 10px;
+		display: flex;
+		justify-content: space-around;
+	}
+	
+	#controls {
+		padding: 30px;
+		background-color: #b78e42;
+		width: 100px;
+		height: 150px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	
+	#result, #result-button {
+		margin-top: 20px;
+		width: 100%;
+		height: 50px;
+		text-align: center;
+		font-size: 1.5em;
+	}
+	
+	#result {
+		display: none;
+	}
+	
+	button {
+		padding: 4px;
+		margin: 5px;
+	}
+	
+	#goban {
+		width: 1000px;
+		height: 1000px;
+		background-image: url("goban.png");
+		background-size: cover;
+		position: relative;
+	}
+	
+	.black {
+		background-color: black;
+	}
+	
+	.white {
+		background-color: white;
+	}
+	
+	#coords {
+		position: absolute;
+		width: 1000px;
+		height: 1000px;
+		background-image: url("coordinates.png");
+		background-size: cover;
+		opacity: 0.5;
+	}
+	#regions {
+		position: absolute;
+		width: 1000px;
+		height: 1000px;
+		background-image: url("regions.png");
+		background-size: cover;
+		opacity: 0.8;
+	}
+	
+	.loc {
+		position: absolute;
+		border-radius: 500px;
+	}
+	
+	
+</style>
+<script>
+	
+	var i,j;
+			//     1   2   3   4   5   6   7   8   9   0
+	var sizes = [ 98, 98, 98, 83, 60,100,100,104, 83, 60,
+				  57, 57, 54, 54, 73, 80, 60, 78, 78, 65,
+				  65, 70, 90, 70];
+	
+			//   1         2         3         4         5         6         7         8         9         0
+	var poss = [[978, 22],[978,122],[978,222],[978,321],[978,421],[839, 22],[846,123],[866,227],[892,324],[915,422],
+				[700, 22],[703, 81],[716,139],[734,192],[761,252],[809,340],[853,432],[560, 22],[568,102],[596,186],
+				[629,244],[669,301],[731,379],[789,460]];
+	
+	for (j=0; j<3; j++) {
+		for (i=0; i<24; i++) {
+			sizes.push(sizes[i]);
+			if (j==0) {
+				poss.push([-poss[i][1]+1000,poss[i][0]]);
+			}
+			if (j==1) {
+				poss.push([-poss[i][0]+1000,-poss[i][1]+1000]);
+			}
+			if (j==2) {
+				poss.push([poss[i][1],-poss[i][0]+1000]);
+			}
+		}
+	}
+	
+	var f = 0.25
+	var offs = [[500,750],[500,750],[500,750]];
+	
+	for (j=0; j<3; j++) {
+		for (i=0; i<96; i++) {
+			sizes.push(sizes[i+j*96]*Math.sqrt(0.125));
+			poss.push([-poss[i+j*96][0]*f+poss[i+j*96][1]*f+offs[j][0],-poss[i+j*96][0]*f-poss[i+j*96][1]*f+offs[j][1]]);
+		}
+	}
+	
+	
+	console.log(poss);
+	window.onload = function() {
+		locs = document.getElementsByClassName("loc");
+		
+		for (i=0; i<locs.length; i++) {
+			locs[i].style.width = sizes[i];
+			locs[i].style.height = sizes[i];
+			locs[i].style.top = poss[i][0] - sizes[i]/2;
+			locs[i].style.left = poss[i][1] - sizes[i]/2;
+			
+		}
+	}
+	
+	function highlight(iden) {
+		document.getElementById("in0" + iden.substring(3)).style.border = "solid 2px red";
+		document.getElementById("in1" + iden.substring(3)).style.border = "solid 2px red";
+		document.getElementById("in2" + iden.substring(3)).style.border = "solid 2px red";
+		document.getElementById("in3" + iden.substring(3)).style.border = "solid 2px red";
+	}
+	
+	function unhighlight(iden) {
+		
+		document.getElementById("in0" + iden.substring(3)).style.border = "";
+		document.getElementById("in1" + iden.substring(3)).style.border = "";
+		document.getElementById("in2" + iden.substring(3)).style.border = "";
+		document.getElementById("in3" + iden.substring(3)).style.border = "";
+	}
+	
+	
+	function change(iden) {
+		if (document.getElementById("in0" + iden.substring(3)).classList.contains("black")) {
+			document.getElementById("in0" + iden.substring(3)).classList.add("white");
+			document.getElementById("in1" + iden.substring(3)).classList.add("white");
+			document.getElementById("in2" + iden.substring(3)).classList.add("white");
+			document.getElementById("in3" + iden.substring(3)).classList.add("white");
+			document.getElementById("in0" + iden.substring(3)).classList.remove("black");
+			document.getElementById("in1" + iden.substring(3)).classList.remove("black");
+			document.getElementById("in2" + iden.substring(3)).classList.remove("black");
+			document.getElementById("in3" + iden.substring(3)).classList.remove("black");
+			swt = 2;
+		} else if (document.getElementById("in0" + iden.substring(3)).classList.contains("white")) {
+			
+			document.getElementById("in0" + iden.substring(3)).classList.remove("white");
+			document.getElementById("in1" + iden.substring(3)).classList.remove("white");
+			document.getElementById("in2" + iden.substring(3)).classList.remove("white");
+			document.getElementById("in3" + iden.substring(3)).classList.remove("white");
+		} else {
+			document.getElementById("in0" + iden.substring(3)).classList.add("black");
+			document.getElementById("in1" + iden.substring(3)).classList.add("black");
+			document.getElementById("in2" + iden.substring(3)).classList.add("black");
+			document.getElementById("in3" + iden.substring(3)).classList.add("black");
+		}
+	}
+	function togglecoords() {
+		if (document.getElementById("coords").style.display == "none") {
+			document.getElementById("coords").style.display = "inline";
+		} else {
+			document.getElementById("coords").style.display = "none";
+		}
+	}
+	function toggleregs() {
+		if (document.getElementById("regions").style.display == "none") {
+			document.getElementById("regions").style.display = "inline";
+		} else {
+			document.getElementById("regions").style.display = "none";
+		}
+	}
+</script>
+<body>
+	<div id="controls">
+		<button onclick="togglecoords();">Coordinates</button>
+		<button onclick="toggleregs();">Regions</button>
+	</div>
+	<div id="goban">
+		<div id="regions"></div>
+		<div id="coords"></div>
+		
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A1"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A2"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A3"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A4"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A5"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A6"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A7"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A8"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A9"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A10"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A11"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A12"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A13"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A14"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A15"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A16"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A17"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A18"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A19"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A20"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A21"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A22"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A23"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0A24"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B1"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B2"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B3"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B4"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B5"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B6"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B7"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B8"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B9"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B10"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B11"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B12"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B13"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B14"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B15"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B16"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B17"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B18"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B19"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B20"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B21"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B22"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B23"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0B24"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C1"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C2"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C3"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C4"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C5"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C6"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C7"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C8"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C9"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C10"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C11"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C12"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C13"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C14"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C15"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C16"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C17"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C18"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C19"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C20"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C21"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C22"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C23"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0C24"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D1"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D2"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D3"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D4"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D5"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D6"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D7"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D8"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D9"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D10"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D11"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D12"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D13"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D14"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D15"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D16"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D17"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D18"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D19"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D20"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D21"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D22"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D23"></div>
+		<div class="loc" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in0D24"></div>
+		
+		
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A1"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A2"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A3"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A4"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A5"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A6"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A7"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A8"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A9"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A10"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A11"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A12"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A13"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A14"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A15"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A16"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A17"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A18"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A19"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A20"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A21"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A22"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A23"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1A24"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B1"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B2"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B3"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B4"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B5"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B6"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B7"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B8"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B9"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B10"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B11"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B12"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B13"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B14"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B15"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B16"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B17"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B18"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B19"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B20"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B21"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B22"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B23"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1B24"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C1"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C2"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C3"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C4"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C5"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C6"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C7"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C8"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C9"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C10"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C11"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C12"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C13"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C14"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C15"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C16"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C17"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C18"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C19"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C20"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C21"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C22"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C23"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1C24"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D1"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D2"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D3"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D4"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D5"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D6"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D7"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D8"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D9"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D10"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D11"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D12"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D13"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D14"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D15"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D16"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D17"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D18"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D19"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D20"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D21"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D22"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D23"></div>
+		<div class="loc inner1" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in1D24"></div>
+		
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A1"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A2"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A3"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A4"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A5"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A6"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A7"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A8"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A9"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A10"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A11"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A12"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A13"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A14"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A15"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A16"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A17"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A18"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A19"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A20"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A21"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A22"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A23"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2A24"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B1"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B2"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B3"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B4"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B5"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B6"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B7"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B8"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B9"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B10"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B11"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B12"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B13"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B14"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B15"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B16"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B17"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B18"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B19"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B20"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B21"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B22"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B23"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2B24"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C1"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C2"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C3"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C4"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C5"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C6"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C7"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C8"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C9"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C10"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C11"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C12"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C13"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C14"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C15"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C16"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C17"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C18"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C19"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C20"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C21"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C22"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C23"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2C24"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D1"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D2"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D3"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D4"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D5"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D6"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D7"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D8"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D9"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D10"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D11"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D12"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D13"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D14"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D15"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D16"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D17"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D18"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D19"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D20"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D21"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D22"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D23"></div>
+		<div class="loc inner2" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in2D24"></div>
+		
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A1"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A2"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A3"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A4"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A5"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A6"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A7"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A8"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A9"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A10"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A11"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A12"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A13"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A14"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A15"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A16"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A17"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A18"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A19"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A20"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A21"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A22"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A23"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3A24"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B1"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B2"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B3"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B4"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B5"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B6"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B7"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B8"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B9"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B10"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B11"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B12"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B13"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B14"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B15"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B16"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B17"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B18"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B19"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B20"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B21"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B22"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B23"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3B24"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C1"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C2"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C3"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C4"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C5"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C6"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C7"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C8"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C9"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C10"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C11"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C12"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C13"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C14"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C15"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C16"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C17"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C18"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C19"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C20"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C21"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C22"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C23"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3C24"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D1"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D2"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D3"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D4"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D5"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D6"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D7"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D8"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D9"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D10"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D11"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D12"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D13"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D14"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D15"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D16"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D17"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D18"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D19"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D20"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D21"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D22"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D23"></div>
+		<div class="loc inner3" onmouseover="highlight(this.id);" onmouseout="unhighlight(this.id);" onclick="change(this.id);"id="in3D24"></div>
+	</div>
+
+</body>
+</html>
