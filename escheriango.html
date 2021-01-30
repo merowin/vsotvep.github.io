@@ -153,22 +153,42 @@
 		}
 	}
 	
+	var tgl = 0;
+	
 	function highlight(iden) {
-		document.getElementById("in0" + iden.substring(3)).style.outline = "solid 2px red";
-		document.getElementById("in1" + iden.substring(3)).style.outline = "solid 2px red";
-		document.getElementById("in2" + iden.substring(3)).style.outline = "solid 2px red";
-		document.getElementById("in3" + iden.substring(3)).style.outline = "solid 2px red";
+		if (!document.getElementById("in0" + iden.substring(3)).classList.contains("black") && !document.getElementById("in0" + iden.substring(3)).classList.contains("white")) {
+			if (tgl%2==0 ) {
+				document.getElementById("in0" + iden.substring(3)).style.backgroundColor = "rgba(0,0,0,.5)";
+				document.getElementById("in1" + iden.substring(3)).style.backgroundColor = "rgba(0,0,0,.5)";
+				document.getElementById("in2" + iden.substring(3)).style.backgroundColor = "rgba(0,0,0,.5)";
+				document.getElementById("in3" + iden.substring(3)).style.backgroundColor = "rgba(0,0,0,.5)";
+			} else {
+				document.getElementById("in0" + iden.substring(3)).style.backgroundColor = "rgba(255,255,255,.5)";
+				document.getElementById("in1" + iden.substring(3)).style.backgroundColor = "rgba(255,255,255,.5)";
+				document.getElementById("in2" + iden.substring(3)).style.backgroundColor = "rgba(255,255,255,.5)";
+				document.getElementById("in3" + iden.substring(3)).style.backgroundColor = "rgba(255,255,255,.5)";
+			}
+		} else {
+			
+			document.getElementById("in0" + iden.substring(3)).style.boxShadow = "0px 0px 10px 4px red";
+			document.getElementById("in1" + iden.substring(3)).style.boxShadow = "0px 0px 5px 2px red";
+			document.getElementById("in2" + iden.substring(3)).style.boxShadow = "0px 0px 3px 1px red";
+			document.getElementById("in3" + iden.substring(3)).style.boxShadow = "0px 0px 1px 1px red";
+		}
 	}
 	
 	function unhighlight(iden) {
 		
-		document.getElementById("in0" + iden.substring(3)).style.outline = "";
-		document.getElementById("in1" + iden.substring(3)).style.outline = "";
-		document.getElementById("in2" + iden.substring(3)).style.outline = "";
-		document.getElementById("in3" + iden.substring(3)).style.outline = "";
+		document.getElementById("in0" + iden.substring(3)).style.boxShadow = "";
+		document.getElementById("in1" + iden.substring(3)).style.boxShadow = "";
+		document.getElementById("in2" + iden.substring(3)).style.boxShadow = "";
+		document.getElementById("in3" + iden.substring(3)).style.boxShadow = "";
+		document.getElementById("in0" + iden.substring(3)).style.backgroundColor = "";
+		document.getElementById("in1" + iden.substring(3)).style.backgroundColor = "";
+		document.getElementById("in2" + iden.substring(3)).style.backgroundColor = "";
+		document.getElementById("in3" + iden.substring(3)).style.backgroundColor = "";
 	}
 	
-	var tgl = 0
 	
 	function change(iden) {
 		if (document.getElementById("in0" + iden.substring(3)).classList.contains("black")) {
@@ -188,6 +208,10 @@
 			document.getElementById("in1" + iden.substring(3)).classList.add(c);
 			document.getElementById("in2" + iden.substring(3)).classList.add(c);
 			document.getElementById("in3" + iden.substring(3)).classList.add(c);
+			document.getElementById("in0" + iden.substring(3)).style.backgroundColor =  "";
+			document.getElementById("in1" + iden.substring(3)).style.backgroundColor =  "";
+			document.getElementById("in2" + iden.substring(3)).style.backgroundColor =  "";
+			document.getElementById("in3" + iden.substring(3)).style.backgroundColor =  "";
 		}
 	}
 	function togglecoords() {
