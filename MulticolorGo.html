@@ -2,7 +2,7 @@
 <head>
 	<meta charset="UTF-8">
 	<style>
-		
+
 		:root {
 			--p1: #343837;
 			--p2: #eeeeee;
@@ -13,9 +13,7 @@
 			--p7: #cc73a8;
 			--p8: #55b2eb;
 			--p9: #e6a100;
-			
 			--board: #e0bd66;
-			
 			--o1: 100%;
 			--o2: 50%;
 			--o3: 50%;
@@ -27,7 +25,7 @@
 			--o9: 50%;
 			--cc: var(--p0);
 		}
-		
+
 		body {
 			background: black;
 			display: flex;
@@ -38,7 +36,7 @@
 			-webkit-user-select: none;
 			-ms-user-select: none;
 		}
-		
+
 		#container {
 			width: min(90vh, 90vw);
 			height: min(90vh, 90vw);
@@ -48,12 +46,13 @@
 			flex-direction: vertical;
 			position: relative;
 		}
-		
+
 		#nametag {
 			position: absolute;
 			width: 100%;
 			height: min(5vh, 5vw);
-			top: max(-5vh, -5vw);;
+			top: max(-5vh, -5vw);
+			;
 			display: flex;
 			align-items: center;
 			font-family: Arial;
@@ -61,25 +60,23 @@
 			line-height: min(2vh, 2vw);
 			color: white;
 		}
-		
+
 		#stonecontainer {
 			width: 100%;
 			height: 100%;
-			
 			display: flex;
 			flex-direction: vertical;
 			position: relative;
 		}
-		
+
 		.border {
 			font-family: Arial;
 			color: var(--p1);
 			display: flex;
-			
 			justify-content: center;
 			align-items: center;
 		}
-		
+
 		.intersection div {
 			width: 100%;
 			height: 100%;
@@ -88,91 +85,181 @@
 			background-size: 100% 100%;
 			background-position: 0 0;
 		}
-		
-		.intersection.c1 div { background-color: var(--p1); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		.intersection.c2 div { background-color: var(--p2); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		.intersection.c3 div { background-color: var(--p3); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		.intersection.c4 div { background-color: var(--p4); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		.intersection.c5 div { background-color: var(--p5); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		.intersection.c6 div { background-color: var(--p6); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		.intersection.c7 div { background-color: var(--p7); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		.intersection.c8 div { background-color: var(--p8); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		.intersection.c9 div { background-color: var(--p9); opacity: 100%; border: min(0.3vh, 0.3vw) solid var(--p1); }
-		
+
+		.intersection.c1 div {
+			background-color: var(--p1);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
+		.intersection.c2 div {
+			background-color: var(--p2);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
+		.intersection.c3 div {
+			background-color: var(--p3);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
+		.intersection.c4 div {
+			background-color: var(--p4);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
+		.intersection.c5 div {
+			background-color: var(--p5);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
+		.intersection.c6 div {
+			background-color: var(--p6);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
+		.intersection.c7 div {
+			background-color: var(--p7);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
+		.intersection.c8 div {
+			background-color: var(--p8);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
+		.intersection.c9 div {
+			background-color: var(--p9);
+			opacity: 100%;
+			border: min(0.3vh, 0.3vw) solid var(--p1);
+		}
+
 		.intersection:hover div {
 			background-color: var(--cc);
 			opacity: 50%;
 			border: min(0.3vh, 0.3vw) solid var(--p1);
 		}
-		
-		.intersection.c1:hover div { background-image: linear-gradient(135deg, var(--p1) 60%, var(--cc) 60%); opacity: 100%; }
-		.intersection.c2:hover div { background-image: linear-gradient(135deg, var(--p2) 60%, var(--cc) 60%); opacity: 100%; }
-		.intersection.c3:hover div { background-image: linear-gradient(135deg, var(--p3) 60%, var(--cc) 60%); opacity: 100%; }
-		.intersection.c4:hover div { background-image: linear-gradient(135deg, var(--p4) 60%, var(--cc) 60%); opacity: 100%; }
-		.intersection.c5:hover div { background-image: linear-gradient(135deg, var(--p5) 60%, var(--cc) 60%); opacity: 100%; }
-		.intersection.c6:hover div { background-image: linear-gradient(135deg, var(--p6) 60%, var(--cc) 60%); opacity: 100%; }
-		.intersection.c7:hover div { background-image: linear-gradient(135deg, var(--p7) 60%, var(--cc) 60%); opacity: 100%; }
-		.intersection.c8:hover div { background-image: linear-gradient(135deg, var(--p8) 60%, var(--cc) 60%); opacity: 100%; }
-		.intersection.c9:hover div { background-image: linear-gradient(135deg, var(--p9) 60%, var(--cc) 60%); opacity: 100%; }
-		
+
+		.intersection.c1:hover div {
+			background-image: linear-gradient(135deg, var(--p1) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.c2:hover div {
+			background-image: linear-gradient(135deg, var(--p2) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.c3:hover div {
+			background-image: linear-gradient(135deg, var(--p3) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.c4:hover div {
+			background-image: linear-gradient(135deg, var(--p4) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.c5:hover div {
+			background-image: linear-gradient(135deg, var(--p5) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.c6:hover div {
+			background-image: linear-gradient(135deg, var(--p6) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.c7:hover div {
+			background-image: linear-gradient(135deg, var(--p7) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.c8:hover div {
+			background-image: linear-gradient(135deg, var(--p8) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.c9:hover div {
+			background-image: linear-gradient(135deg, var(--p9) 60%, var(--cc) 60%);
+			opacity: 100%;
+		}
+
+		.intersection.marked div::after {
+			background-color: #dbdbdb;
+			width: 30%;
+			height: 30%;
+			position: relative;
+			content: "";
+			top: 35%;
+			left: 35%;
+			mix-blend-mode: difference;
+			display: block;
+		}
 
 		#gridcontainer {
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			
 			display: flex;
 			justify-content: center;
 			align-items: center;
 		}
-		
+
 		#grid {
 			display: flex;
 			box-sizing: border-box;
 			border: min(0.3vh, 0.3vw) solid var(--p1);
 		}
-		
-		#grid div div {
-			border: min(0.1vh, 0.1vw) solid var(--p1);
-			box-sizing: border-box;
-		}
-		
+
+			#grid div div {
+				border: min(0.1vh, 0.1vw) solid var(--p1);
+				box-sizing: border-box;
+			}
+
 		#hoshi {
 			position: absolute;
 			display: flex;
 			justify-content: space-around;
 		}
-		#hoshi div {
-			
-			display: flex;
-			flex-direction: column;
-			justify-content: space-around;
-		}
-		#hoshi div div {
-			width: min(1.25vh, 1.25vw);
-			height: min(1.25vh, 1.25vw);
-		}
-		#hoshi .mark {
-			background-color: var(--p1);
-			border-radius: 50%;
-		}
-		
+
+			#hoshi div {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+			}
+
+				#hoshi div div {
+					width: min(1.25vh, 1.25vw);
+					height: min(1.25vh, 1.25vw);
+				}
+
+			#hoshi .mark {
+				background-color: var(--p1);
+				border-radius: 50%;
+			}
+
 		#buttons {
 			background-color: var(--board);
 			display: flex;
 			flex-direction: column;
 		}
-		
+
 		.button:hover {
 			cursor: pointer;
 		}
-		
+
 		.button {
 			width: min(4vh, 4vw);
 			height: min(4vh, 4vw);
 			border: min(0.25vh,0.25vw) solid var(--board);
 			margin: min(0.5vh, 0.5vw) min(0.5vh, 0.5vw) 0 0;
-			
 			color: var(--p1);
 			font-family: Arial;
 			font-size: min(3vh, 3vw);
@@ -180,49 +267,76 @@
 			justify-content: center;
 			align-items: center;
 		}
-		
-		#b1 { background-color: var(--p1); }
-		#b2 { background-color: var(--p2); }
-		#b3 { background-color: var(--p3); }
-		#b4 { background-color: var(--p4); }
-		#b5 { background-color: var(--p5); }
-		#b6 { background-color: var(--p6); }
-		#b7 { background-color: var(--p7); }
-		#b8 { background-color: var(--p8); }
-		#b9 { background-color: var(--p9); }
-		
-		#b12 { font-size: min(2vh, 2vw); }
-		
+
+		#b1 {
+			background-color: var(--p1);
+		}
+
+		#b2 {
+			background-color: var(--p2);
+		}
+
+		#b3 {
+			background-color: var(--p3);
+		}
+
+		#b4 {
+			background-color: var(--p4);
+		}
+
+		#b5 {
+			background-color: var(--p5);
+		}
+
+		#b6 {
+			background-color: var(--p6);
+		}
+
+		#b7 {
+			background-color: var(--p7);
+		}
+
+		#b8 {
+			background-color: var(--p8);
+		}
+
+		#b9 {
+			background-color: var(--p9);
+		}
+
+		#b12 {
+			font-size: min(2vh, 2vw);
+		}
+
 		.button.selected {
 			border: min(0.25vh,0.25vw) solid var(--p1);
 		}
-		
 	</style>
-	
+
 	<link href="othercss.css" rel="stylesheet">
 	<script>
-		
+
 		var params = (new URL(document.location)).searchParams;
-		
+
 		var bs = parseInt(params.get("bs"));
-		var BOARDSIZE = (Number.isInteger(bs) && bs > 1 && bs < 26 ? bs : 9 );
-		
+		var BOARDSIZE = (Number.isInteger(bs) && bs > 1 && bs < 26 ? bs : 9);
+
 		var gamestate = new Array();
 		if (params.get("st") != null) {
 			var st = params.get("st");
-			var success = (st.length%3 == 0);
-			for (i=0; (3*i<st.length) && success; i++) {
-				var n = st[3*i].toLowerCase().charCodeAt(0)-96;
-				var m = st[3*i+1].toLowerCase().charCodeAt(0)-96;
-				var c = st[3*i+2].toLowerCase().charCodeAt(0)-96;
+			var success = (st.length % 3 == 0);
+			for (i = 0; (3 * i < st.length) && success; i++) {
+				var n = st[3 * i].toLowerCase().charCodeAt(0) - 96;
+				var m = st[3 * i + 1].toLowerCase().charCodeAt(0) - 96;
+				var c = st[3 * i + 2].toLowerCase().charCodeAt(0) - 96;
 				if (1 <= n && n <= BOARDSIZE && 1 <= m && m <= BOARDSIZE && 1 <= c && c <= 9) {
-					gamestate.push([n,m,c]);
+					gamestate.push([n, m, c]);
 				} else { success = 0; }
 			}
 			if (!success) { gamestate = new Array(); }
 		}
-		
-		
+
+
 		var hasplayers = 0;
 		var players = new Array();
 		for (i = 1; i <= 9; i++) {
@@ -233,101 +347,102 @@
 				players.push("nobody");
 			}
 		}
-		
-		
-		
+
+
+
 		var currentcolor = 0;
-		var board = new Array(BOARDSIZE+2);
+		var board = new Array(BOARDSIZE + 2);
 		var nametag = document.createElement('div');
-		
+
 		var mouseDown = 0;
 		var shifted;
-		
+		var marking = 0;
+
 		var nametagroot = "Placing stones as: ";
 		var nametagempty = "Removing stones";
 		var colorlist = ['Black', 'White', 'Red', 'Yellow', 'Blue', 'Green', 'Pink', 'Cerulean', 'Orange'];
-		
+
 		function initialise() {
 			var ctn = document.createElement('div');
 			ctn.id = 'container';
 			ctn.classList.add('cc0');
 			document.body.appendChild(ctn);
-			
-			
+
+
 			var gridctn = document.createElement('div');
 			gridctn.id = 'gridcontainer';
 			var stctn = document.createElement('div');
 			stctn.id = 'stonecontainer';
-			
+
 			ctn.appendChild(gridctn);
 			ctn.appendChild(stctn);
-			
+
 			var grid = document.createElement('div');
 			var hoshi = document.createElement('div');
 			grid.id = 'grid';
 			hoshi.id = 'hoshi';
-			hoffset = [1,1,1,1,1,1,1,1,6,6,10,9,10,9,14,12,18,15,22,18,20,21,20,20,20,27];
-			hnumber = [0,0,0,0,0,1,0,1,2,3,2 ,3,2 ,3,2 ,3 ,2 ,3 ,2 ,3 ,4 ,3 ,4 ,5 ,4 ,3 ];
-			hoshi.style.width = 'min(' + ((hoffset[BOARDSIZE])*90 / (BOARDSIZE+2)) + 'vh, ' + ((hoffset[BOARDSIZE])*90 / (BOARDSIZE+2)) + 'vw)';
+			hoffset = [1, 1, 1, 1, 1, 1, 1, 1, 6, 6, 10, 9, 10, 9, 14, 12, 18, 15, 22, 18, 20, 21, 20, 20, 20, 27];
+			hnumber = [0, 0, 0, 0, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 4, 3, 4, 5, 4, 3];
+			hoshi.style.width = 'min(' + ((hoffset[BOARDSIZE]) * 90 / (BOARDSIZE + 2)) + 'vh, ' + ((hoffset[BOARDSIZE]) * 90 / (BOARDSIZE + 2)) + 'vw)';
 			gridctn.appendChild(grid);
 			gridctn.appendChild(hoshi);
-			
-			for (i=0; i<hnumber[BOARDSIZE]; i++) {
+
+			for (i = 0; i < hnumber[BOARDSIZE]; i++) {
 				var markrow = document.createElement('div');
-				
-				markrow.style.height = 'min(' + ((hoffset[BOARDSIZE])*90 / (BOARDSIZE+2)) + 'vh, ' + ((hoffset[BOARDSIZE])*90 / (BOARDSIZE+2)) + 'vw)';
-				for (j=0; j<hnumber[BOARDSIZE]; j++) {
+
+				markrow.style.height = 'min(' + ((hoffset[BOARDSIZE]) * 90 / (BOARDSIZE + 2)) + 'vh, ' + ((hoffset[BOARDSIZE]) * 90 / (BOARDSIZE + 2)) + 'vw)';
+				for (j = 0; j < hnumber[BOARDSIZE]; j++) {
 					var mark = document.createElement('div');
-					if ((i+j)%2 == 0 || (BOARDSIZE > 13 && BOARDSIZE != 23) || BOARDSIZE%2 == 0) {
+					if ((i + j) % 2 == 0 || (BOARDSIZE > 13 && BOARDSIZE != 23) || BOARDSIZE % 2 == 0) {
 						mark.classList.add('mark');
 					}
 					markrow.appendChild(mark);
 				}
 				hoshi.appendChild(markrow);
 			}
-			
+
 			nametag.id = "nametag";
 			nametag.innerHTML = nametagempty;
 			ctn.appendChild(nametag);
-			
-			for (i=0; i<BOARDSIZE+2; i++) {
-				board[i] = new Array(BOARDSIZE+2);
+
+			for (i = 0; i < BOARDSIZE + 2; i++) {
+				board[i] = new Array(BOARDSIZE + 2);
 				var row = document.createElement('div');
 				row.classList.add('row');
-				
-				
-				if (i>0 && i<BOARDSIZE) {
+
+
+				if (i > 0 && i < BOARDSIZE) {
 					var gridrow = document.createElement('div');
 					grid.appendChild(gridrow);
 				}
-				for (j=0; j<BOARDSIZE+2; j++) {
+				for (j = 0; j < BOARDSIZE + 2; j++) {
 					var e = document.createElement('div');
-					e.style.width = 'min(' + (90 / (BOARDSIZE+2)) + 'vh, ' + (90 / (BOARDSIZE+2)) + 'vw)';
-					e.style.height = 'min(' + (90 / (BOARDSIZE+2)) + 'vh, ' + (90 / (BOARDSIZE+2)) + 'vw)';
-					e.style.fontSize = 'min(' + (30 / (BOARDSIZE+2)) + 'vh, ' + (30 / (BOARDSIZE+2)) + 'vw)';
-					
-					if (i == 0 || i == BOARDSIZE+1 || j == 0 || j == BOARDSIZE+1) {
+					e.style.width = 'min(' + (90 / (BOARDSIZE + 2)) + 'vh, ' + (90 / (BOARDSIZE + 2)) + 'vw)';
+					e.style.height = 'min(' + (90 / (BOARDSIZE + 2)) + 'vh, ' + (90 / (BOARDSIZE + 2)) + 'vw)';
+					e.style.fontSize = 'min(' + (30 / (BOARDSIZE + 2)) + 'vh, ' + (30 / (BOARDSIZE + 2)) + 'vw)';
+
+					if (i == 0 || i == BOARDSIZE + 1 || j == 0 || j == BOARDSIZE + 1) {
 						e.classList.add('border');
-						if (i != 0 && i != BOARDSIZE+1) {
-							e.innerHTML = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'[i-1];
-						} else if (j != 0 && j != BOARDSIZE+1) {
+						if (i != 0 && i != BOARDSIZE + 1) {
+							e.innerHTML = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'[i - 1];
+						} else if (j != 0 && j != BOARDSIZE + 1) {
 							e.innerHTML = BOARDSIZE - j + 1;
 						}
 					} else {
 						e.classList.add('intersection');
 						var s = document.createElement('div');
 						e.appendChild(s);
-						(function() {
+						(function () {
 							var ii = i;
 							var jj = j;
-							e.onclick = function() { changeStone(ii,jj, 1); };
-							e.onmouseover = function() { changeStone(ii,jj, 0); };
+							e.onclick = function () { changeStone(ii, jj, 1); };
+							e.onmouseover = function () { changeStone(ii, jj, 0); };
 						})();
-						
+
 						if (i != BOARDSIZE && j != BOARDSIZE) {
 							var f = document.createElement('div');
-							f.style.width = 'min(' + (90 / (BOARDSIZE+2)) + 'vh, ' + (90 / (BOARDSIZE+2)) + 'vw)';
-							f.style.height = 'min(' + (90 / (BOARDSIZE+2)) + 'vh, ' + (90 / (BOARDSIZE+2)) + 'vw)';
+							f.style.width = 'min(' + (90 / (BOARDSIZE + 2)) + 'vh, ' + (90 / (BOARDSIZE + 2)) + 'vw)';
+							f.style.height = 'min(' + (90 / (BOARDSIZE + 2)) + 'vh, ' + (90 / (BOARDSIZE + 2)) + 'vw)';
 							gridrow.appendChild(f);
 						}
 					}
@@ -336,31 +451,34 @@
 				}
 				stctn.appendChild(row);
 			}
-			
+
 			var buttons = document.createElement('div');
 			buttons.id = "buttons";
-			for (i = 1; i < 13; i++) {
+			for (i = 1; i < 14; i++) {
 				var b = document.createElement('div');
 				b.classList.add("button");
 				b.id = "b" + i;
 				if (i < 10) {
-					(function() {
+					(function () {
 						var ii = "" + i;
-						b.onclick = function() { switchColor(ii) };
+						b.onclick = function () { switchColor(ii) };
 					})();
 				} else {
 					if (i == 10) {
-						b.onclick = function() { switchColor("0") };
+						b.onclick = function () { switchColor("0") };
 						b.innerHTML = '⌫';
 						b.classList.add("selected");
 					} else if (i == 11) {
-						
-						b.onclick = function() { toggleShift(1); };
+
+						b.onclick = function () { toggleShift(1); };
 						b.innerHTML = '⇧';
-					} else {
-						
-						b.onclick = function() { openLink(); };
+					} else if (i == 12) {
+
+						b.onclick = function () { openLink(); };
 						b.innerHTML = 'link';
+					} else {
+						b.onclick = function () { toggleMarking(); };
+						b.innerHTML = '□';
 					}
 				}
 				buttons.appendChild(b);
@@ -370,34 +488,39 @@
 				board[gamestate[i][0]][gamestate[i][1]].classList.add("c" + gamestate[i][2]);
 			}
 		}
-		
+
 		function openLink() {
 			var l = location.protocol + '//' + location.host + location.pathname + '?';
-			for (i=1; i<=9; i++) {
-				if (players[i-1] != "nobody") { l += (l[l.length-1] == '?' ? "" : "&") + "p" + (i) + "=" + encodeURI(players[i-1]); }
+			for (i = 1; i <= 9; i++) {
+				if (players[i - 1] != "nobody") { l += (l[l.length - 1] == '?' ? "" : "&") + "p" + (i) + "=" + encodeURI(players[i - 1]); }
 			}
-			
-			if (l[l.length-1] != '?') { l += '&st='; } else { l += 'st=';}
-			
-			for (i=1; i<=BOARDSIZE; i++) {
-				for (j=1; j<=BOARDSIZE; j++) {
-					for (k=1; k<=9; k++) {
-						if (board[i][j].classList.contains('c' + k)) { l += String.fromCharCode(i+96) + String.fromCharCode(j+96) + String.fromCharCode(k+96); }
+
+			if (l[l.length - 1] != '?') { l += '&st='; } else { l += 'st='; }
+
+			for (i = 1; i <= BOARDSIZE; i++) {
+				for (j = 1; j <= BOARDSIZE; j++) {
+					for (k = 1; k <= 9; k++) {
+						if (board[i][j].classList.contains('c' + k)) { l += String.fromCharCode(i + 96) + String.fromCharCode(j + 96) + String.fromCharCode(k + 96); }
 					}
 				}
 			}
-			
+
 			l += '&bs=' + BOARDSIZE;
 			window.location.href = l;
 		}
-		
-		function changeStone(i,j,c) {
+
+		function changeStone(i, j, c) {
 			if (mouseDown == 1 || c == 1) {
 				var e = board[i][j];
+				if (marking) {
+					if (e.classList.contains("marked")) e.classList.remove("marked")
+					else e.classList.add("marked");
+					return;
+				}
 				if (currentcolor != 0 && (mouseDown == 1 || !e.classList.contains("c" + currentcolor))) {
 					if (shifted) {
 						e.classList.add("c" + currentcolor);
-					} else { 
+					} else {
 						e.className = "intersection c" + currentcolor;
 					}
 				} else {
@@ -409,7 +532,7 @@
 				}
 			}
 		}
-		
+
 		function toggleShift(x) {
 			if (x == 1) {
 				if (shifted == 1) {
@@ -418,7 +541,7 @@
 					shifted = 1;
 				}
 			}
-			
+
 			if (shifted == 1) {
 				document.getElementById('b11').classList.add("selected");
 				document.getElementById('container').classList.add("shifted");
@@ -427,10 +550,21 @@
 				document.getElementById('container').classList.remove("shifted");
 			}
 		}
-		
+
+		function toggleMarking() {
+			document.documentElement.style.setProperty('--o' + currentcolor, '50%');
+			marking = 1 - marking;
+
+			document.getElementsByClassName('selected')[0]?.classList.remove('selected');
+			if (marking) {
+				document.getElementById('b13').classList.add("selected");
+				document.documentElement.style.setProperty('--cc', 'var(--p0)');
+			}
+		}
+
 		document.addEventListener('keydown', keypressed);
-		document.addEventListener('keyup', function(e){ shifted = e.shiftKey; toggleShift(0); });
-		
+		document.addEventListener('keyup', function (e) { shifted = e.shiftKey; toggleShift(0); });
+
 		function keypressed(e) {
 			shifted = e.shiftKey;
 			toggleShift(0);
@@ -447,7 +581,7 @@
 				case "0": switchColor(e.key);
 			}
 		}
-		
+
 		function switchColor(c) {
 			document.documentElement.style.setProperty('--o' + currentcolor, '50%');
 			switch (c) {
@@ -461,7 +595,7 @@
 				case "8": currentcolor = 8; break;
 				case "9": currentcolor = 9; break;
 				case "0": currentcolor = 0; break;
-				
+
 			}
 			document.documentElement.style.setProperty('--cc', 'var(--p' + currentcolor + ')');
 			document.documentElement.style.setProperty('--o' + currentcolor, '100%');
@@ -477,11 +611,12 @@
 			ctn.classList.remove('cc9');
 			ctn.classList.remove('cc0');
 			ctn.classList.add('cc' + currentcolor);
-			
-			nametag.innerHTML = (currentcolor == 0 ? nametagempty : nametagroot + colorlist[currentcolor-1] + (hasplayers ? ' (' + players[currentcolor-1] + ')' : "" ));
+
+			nametag.innerHTML = (currentcolor == 0 ? nametagempty : nametagroot + colorlist[currentcolor - 1] + (hasplayers ? ' (' + players[currentcolor - 1] + ')' : ""));
 			var sel = document.getElementsByClassName('selected')[0];
 			sel.classList.remove('selected');
 			document.getElementById('b' + (c == 0 ? 10 : c)).classList.add('selected');
+			marking = 0;
 		}
 	</script>
 </head>
